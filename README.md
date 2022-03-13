@@ -8,6 +8,8 @@ We then compute a weighted metric incorporating results from all power
 flows and raw model results. Now, we can use HyperOpt via Ray Tune to
 optimize some hyperparameters of the neural network.
 
+See [condor_tune.py](condor_tune.py), [Ray Tune](https://docs.ray.io/en/latest/tune/index.html), and [HTCondor](https://htcondor.readthedocs.io/en/feature/apis/python-bindings/index.html) for relevant documentation.
+
 Ray Tune restricts us to run all jobs on a single machine, so we need
 to spawn a condor job for each trial and automatically collect results
 from the trials. We then have access to Ray Tune to automatically
