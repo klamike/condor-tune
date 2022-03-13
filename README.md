@@ -1,12 +1,11 @@
 # condor_tune
 
-This example project demonstrates the condor_tune framework. It comes
-from an application in ML for Power Systems research, where we first
-train a neural network using a GPU, then run parallel power flows using
-the trained network on every example in its respective validation set.
-We then compute a weighted metric incorporating results from all power
-flows and raw model results. Now, we can use HyperOpt via Ray Tune to
-optimize some hyperparameters of the neural network.
+This example project demonstrates the `condor_tune` framework for
+hyperparameter optimization. It comes from an application in ML for
+Power Systems research, where we first train a neural network using a
+GPU, then run parallel power flows using the trained network on every
+example in its respective validation set. We then must compute a weighted
+metric incorporating results from all power flows and raw model performance.
 
 See [condor_tune.py](condor_tune.py), [Ray Tune](https://docs.ray.io/en/latest/tune/index.html), and [HTCondor](https://htcondor.readthedocs.io/en/feature/apis/python-bindings/index.html) for relevant documentation.
 
