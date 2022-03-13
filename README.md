@@ -25,7 +25,7 @@ The submitting process for a job array is a bit more involved:
 2. Suppose every job in this array reads a json file like `THIS_TRIAL_DIR/flows/42.json`
    and runs a job with the required parameters. We can then create the `flows`
    directory and write the json files at the end of the training job.
-3. Once we are done preparing run_flow.cmd and the flows directory, we create
+3. Once we are done preparing `run_flow.cmd` and the `flows` directory, we create
    the flag file `THIS_TRIAL_DIR/training_done` and exit.
 4. The HTCondor Job then ends, and the job array is submitted to
    HTCondor by this script via the bash interface.
