@@ -10,17 +10,28 @@ from typing import Dict, Any
 from misc import *
 from config import *
 
+############################################################################################
+## DIRECTORY SETUP
+############################################################################################
+
 create_base_directories = True
 move_current_trials     = True
 
 if create_base_directories: pathlib.Path(TRIAL_DIR).mkdir(parents=True, exist_ok=True)
 if move_current_trials: move_trials()
 
+############################################################################################
+## DEFINE TRIAL FUNCTION
+############################################################################################
+
 def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     """Submit and wait for a condor job to finish, then report results"""
+
+    ############################################################################################
+    ## PREPARE PARAMS JSON
+    ############################################################################################
     trial_hash = dict_hash(params)
     params['hash'] = trial_hash
-
     THIS_TRIAL_DIR = f'{TRIAL_DIR}/{trial_hash}'
 
     # tune automatically converts ints to floats, so we enforce types as needed here
@@ -32,7 +43,9 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     with open(f'{THIS_TRIAL_DIR}/params.json', 'w') as f:
         json.dump(params, f) # we will read this file in the training script
 
-    ## SUBMIT JOB
+    ############################################################################################
+    ## SUBMIT TRAINING JOB
+    ############################################################################################
     schedd = htcondor.Schedd()
     is_running = lambda job_id: len(schedd.query(f'ClusterId == {job_id}')) > 0
 
@@ -62,7 +75,9 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     result = schedd.submit(train_job, count=1)
     job_id = result.cluster()
 
+    ############################################################################################
     ## DETECT WHEN TRAINING JOB IS DONE
+    ############################################################################################
     job_start_time = time.time()
     job_timeout    = lambda : (time.time() - job_start_time) > JOB_TIMEOUT
     while is_running(job_id) and not job_timeout():
@@ -78,7 +93,10 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
 
     if file_timeout(): raise Exception("Job ended but training failed to complete")
 
+    ############################################################################################
     ## SUBMIT FLOW JOBS
+    ############################################################################################
+
     # Each job reads a file like THIS_TRIAL_DIR/flows/42.json and
     # writes a file like THIS_TRIAL_DIR/flows/results/42.json.
 
@@ -92,7 +110,10 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     while is_running(flow_jobid) and not flow_timeout():
         time.sleep(TIME_BETWEEN_QUERIES)
 
-    ## COMPUTE METRICS
+    ############################################################################################
+    ## SUBMIT METRICS JOB
+    ############################################################################################
+
     metric_job = htcondor.Submit(
     # This job reads the json files in THIS_TRIAL_DIR/flows/, and computes metrics
         f"""
@@ -114,7 +135,10 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     metric_result = schedd.submit(metric_job, count=1)
     metric_jobid  = metric_result.cluster()
 
-    ## DETECT WHEN METRIC JOB IS DONE
+    ############################################################################################
+    ## DETECT WHEN METRICS JOB IS DONE
+    ############################################################################################
+
     # This uses the same logic as the training job above.
     metric_start_time = time.time()
     metric_timeout    = lambda : (time.time() - metric_start_time) > METRIC_TIMEOUT
@@ -128,7 +152,10 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
 
     if file_timeout(): raise Exception("Job ended but training failed to complete")
 
+    ############################################################################################
     ## REPORT RESULTS
+    ############################################################################################
+
     result_dict = torch_unpickle(f'{THIS_TRIAL_DIR}/results.pkl')
     tune.report( l1_loss=result_dict['l1_loss'],          # based on training
                 tot_viol=result_dict['tot_viol'],         # based on training
@@ -137,10 +164,11 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
                 weighted=result_dict['weighted'],         # based on training and flows
                     time=result_dict['training_time'])    # based on training
 
-# start ray
-ray.init(num_cpus=RAY_NUM_CPUS)
+############################################################################################
+## BEGIN TRIALS
+############################################################################################
 
-# begin trials
+ray.init(num_cpus=RAY_NUM_CPUS)
 analysis = tune.run(run_trial, config=config, name=EXPERIMENT_NAME,
                            search_alg=HyperOptSearch(points_to_evaluate=[initial],
                                metric=METRIC, mode=METRIC_MODE),
@@ -148,6 +176,9 @@ analysis = tune.run(run_trial, config=config, name=EXPERIMENT_NAME,
                 raise_on_failed_trial=False,
                   resources_per_trial={'cpu': 2/MAX_PARALLEL_TRAILS},)
 
-# write trial results to file
+############################################################################################
+## SAVE RESULTS
+############################################################################################
+
 with open(RESULTS_FILE, 'wb') as f:
     pickle.dump(analysis.results_df, f)

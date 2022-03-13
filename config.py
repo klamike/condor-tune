@@ -21,7 +21,7 @@ TRIAL_DIR = TUNE_DIR + "/trials"
 
 RESULTS_FILE = BASE_DIR + '/results/condor_tune_' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.pkl'
 
-config = {
+config = { # Specify the hyperparameters, with tuning options
     "data_path":     '/home/klamike/data.tar.gz',
     "epochs":        5000,
     "verbose":       False,
@@ -36,7 +36,7 @@ config = {
                'logspace(-3,-7)', 'logspace(-4,-6)', 'logspace(-3,-6)'])
 }
 
-initial = {
+initial = { # Specify the initial values for all hyperparameters
     "data_path":     '/home/klamike/data.tar.gz',
     "epochs":        5000,
     "verbose":       False,
