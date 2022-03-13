@@ -5,7 +5,7 @@ hyperparameter optimization. It comes from an application in ML for
 Power Systems research, where we first train a neural network using a
 GPU, then run parallel power flows using the trained network on every
 example in its respective validation set. We then must compute a weighted
-metric incorporating results from all power flows and raw model performance.
+metric incorporating results from all power flows as well as raw model performance.
 
 See [condor_tune.py](condor_tune.py), [Ray Tune](https://docs.ray.io/en/latest/tune/index.html), and [HTCondor](https://htcondor.readthedocs.io/en/feature/apis/python-bindings/index.html) for relevant documentation.
 
