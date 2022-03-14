@@ -14,11 +14,11 @@ from config import *
 ## DIRECTORY SETUP
 ############################################################################################
 
-create_base_directories = True
-move_current_trials     = True
+create_base_directories     = True
+move_current_trials_to_old  = True
 
 if create_base_directories: pathlib.Path(TRIAL_DIR).mkdir(parents=True, exist_ok=True)
-if move_current_trials: move_trials()
+if move_current_trials_to_old: move_trials()
 
 ############################################################################################
 ## DEFINE TRIAL FUNCTION
@@ -184,6 +184,7 @@ analysis = tune.run(run_trial, config=config, name=EXPERIMENT_NAME,
 ############################################################################################
 ## SAVE RESULTS
 ############################################################################################
+
 
 with open(RESULTS_FILE, 'wb') as f:
     pickle.dump(analysis.results_df, f)

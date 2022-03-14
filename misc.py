@@ -34,20 +34,20 @@ def move_trials():
 
 ## resulting/expected folder structure:
 # condor-tune-project
-# ├── results
-# │   ├── condor_tune_2022-03-14_01-15-45.pkl         (pickled results DataFrame)
+# ├── results   # contains all results                (directory for tuning results, created by user)
+# │   ├── condor_tune_2022-03-14_01-15-45.pkl         (pickled results DataFrame, created by condor_tune.py)
 # │   ├── ...
-# ├── tune                                            (TUNE_DIR)
+# ├── tune                                            (TUNE_DIR, created by condor_tune.py)
 # │   ├── train.sh                                    (script which launches training)
 # │   ├── metric.sh                                   (script which launches metric calculation)
-# │   ├── trials                                      (TRIAL_DIR)
-# │   │   ├── 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a  (hash of this trial's params)
+# │   ├── trials                                      (TRIAL_DIR, created by condor_tune.py)
+# │   │   ├── 0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a  (hash of this trial's params, created by condor_tune.py)
 # │   │   │   ├── flows                               (flows directory, created by training script)
-# │   │   │   │   ├── results                         (post-flow values)
-# │   │   │   │   │   ├── 1.json                      (flow results file)
-# │   │   │   │   │   ├── 2.json                      (flow results file)
+# │   │   │   │   ├── results                         (post-flow values, created by flow script)
+# │   │   │   │   │   ├── 1.json                      (flow results file, created by flow script)
+# │   │   │   │   │   ├── 2.json                      (flow results file, created by flow script)
 # │   │   │   │   │   ├── ...
-# │   │   │   │   │   └── n.json                      (flow results file)
+# │   │   │   │   │   └── n.json                      (flow results file, created by flow script)
 # │   │   │   │   ├── 1.json                          (flow input file, created by training script)
 # │   │   │   │   ├── 2.json                          (flow input file, created by training script)
 # │   │   │   │   ├── ...
