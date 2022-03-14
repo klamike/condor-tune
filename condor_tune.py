@@ -30,6 +30,7 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     ############################################################################################
     ## PREPARE PARAMS JSON
     ############################################################################################
+
     trial_hash = dict_hash(params)
     params['hash'] = trial_hash
     THIS_TRIAL_DIR = f'{TRIAL_DIR}/{trial_hash}'
@@ -44,10 +45,16 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
         json.dump(params, f) # we will read this file in the training script
 
     ############################################################################################
+    ## SETUP HTCONDOR SCHEDD
+    ############################################################################################
+
+    schedd = htcondor.Schedd() # we use xquery since we only need to check if the result is empty
+    def is_running(job_id): return not empty_gen(schedd.xquery(f'ClusterId == {job_id}', projection=["ProcId", "JobStatus"]))
+    def remove_job(job_id): schedd.act(htcondor.JobAction.Remove, f'ClusterId == {job_id}')
+
+    ############################################################################################
     ## SUBMIT TRAINING JOB
     ############################################################################################
-    schedd = htcondor.Schedd()
-    is_running = lambda job_id: len(schedd.query(f'ClusterId == {job_id}')) > 0
 
     train_job = htcondor.Submit(
     # Same syntax as the usual condor_submit file.
@@ -84,6 +91,10 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     while is_running(job_id) and not job_timeout():
         time.sleep(TIME_BETWEEN_QUERIES)
 
+    if job_timeout() and is_running(job_id):
+        remove_job(job_id)
+        raise Exception('Training took too long to complete')
+
     # The training script exits on error, which exits the condor job without writing training_done.
     # If it terminates normally, it will write a file called training_done, then exit the condor job.
     # We use this to detect if training was successful.
@@ -114,6 +125,10 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     flow_timeout    = lambda : (time.time() - flow_start_time) > FLOW_TIMEOUT
     while is_running(flow_jobid) and not flow_timeout():
         time.sleep(TIME_BETWEEN_QUERIES)
+
+    if flow_timeout() and is_running(flow_jobid):
+        remove_job(flow_jobid)
+        raise Exception('Flows took too long to complete')
 
     ############################################################################################
     ## SUBMIT METRICS JOB
@@ -148,12 +163,16 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     metric_start_time = time.time()
     metric_timeout    = lambda : (time.time() - metric_start_time) > METRIC_TIMEOUT
     while is_running(metric_jobid) and not metric_timeout():
-        time.sleep(5)
+        time.sleep(TIME_BETWEEN_QUERIES)
+
+    if metric_timeout() and is_running(metric_jobid):
+        remove_job(metric_jobid)
+        raise Exception('Metric calculation took too long to complete')
 
     file_start_time = time.time()
     file_timeout    = lambda : (time.time() - file_start_time) > FILE_TIMEOUT
     while not pathlib.Path(f'{THIS_TRIAL_DIR}/results.pkl').is_file() and not file_timeout():
-        time.sleep(5)
+        time.sleep(TIME_BETWEEN_QUERIES)
 
     if file_timeout(): raise Exception("Job ended but metric calculation failed to complete")
 

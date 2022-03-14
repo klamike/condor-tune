@@ -14,6 +14,10 @@ def torch_unpickle(path: str) -> Any:
     with open(path, 'rb') as f:
         return torch_unpickle(f).load()
 
+def empty_gen(generator):
+    o = object() # see https://stackoverflow.com/a/21525143/13073379
+    return next(generator, o) is o
+
 def dict_hash(dictionary: Dict[str, Any]) -> str:
     """MD5 hash of a dictionary."""
     # We need to sort arguments so {'a': 1, 'b': 2} has
