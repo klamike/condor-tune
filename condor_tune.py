@@ -155,7 +155,7 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     while not pathlib.Path(f'{THIS_TRIAL_DIR}/results.pkl').is_file() and not file_timeout():
         time.sleep(5)
 
-    if file_timeout(): raise Exception("Job ended but training failed to complete")
+    if file_timeout(): raise Exception("Job ended but metric calculation failed to complete")
 
     ############################################################################################
     ## REPORT RESULTS
