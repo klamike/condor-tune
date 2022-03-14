@@ -17,7 +17,7 @@ TIME_BETWEEN_QUERIES = 5  # in seconds
 RAY_NUM_CPUS = 2  # must use at least two - one for manager, one for trials
 
 BASE_DIR  = "/home/klamike/condor-tune-project"
-TUNE_DIR  = BASE_DIR + "/autotune"
+TUNE_DIR  = BASE_DIR + "/tune"
 TRIAL_DIR = TUNE_DIR + "/trials"
 
 RESULTS_FILE = BASE_DIR + '/results/condor_tune_' + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + '.pkl'
