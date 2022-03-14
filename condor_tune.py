@@ -174,7 +174,7 @@ analysis = tune.run(run_trial, config=config, name=EXPERIMENT_NAME,
                                metric=METRIC, mode=METRIC_MODE),
                           num_samples=NUM_TRIALS,
                 raise_on_failed_trial=False,
-                  resources_per_trial={'cpu': 2/MAX_PARALLEL_TRAILS},)
+                  resources_per_trial={'cpu': RAY_NUM_CPUS/MAX_PARALLEL_TRAILS},)
 
 ############################################################################################
 ## SAVE RESULTS
