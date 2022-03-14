@@ -44,3 +44,9 @@ TODO:
 - Add checkpointing to support early stopping/restarting
 - Quantify maximum number of trials per CPU (tested up to 12 jobs with 2 CPUs)
 - Graceful exit on keyboard interrupt, optionally killing all condor jobs spawned
+
+
+Michael Klamkin 2022
+Georgia Institute of Technology
+H. Milton Stewart School of Industrial Engineering
+Pascal Van Hentenryck (PVH) Lab, Risk-Aware Market Clearing (RAMC) Group
