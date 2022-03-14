@@ -38,6 +38,7 @@ located in `TUNE_DIR`. They look something like:
     conda activate project_env
     python /home/klamike/condor-tune-project/train.py "$@"
 
+The full folder structure is outlined at the bottom of [misc.py](misc.py).
 We omit the actual training, flow, and metric calculation scripts as they are out of scope for this project.
 
 ## TODO: 
