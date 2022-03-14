@@ -69,6 +69,7 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
         """
     # If successful, this job will write several files, including:
     # THIS_TRIAL_DIR/training_done: prescence indicates that the training job is done
+    # THIS_TRIAL_DIR/run_flow.cmd: HTCondor Submit file for flow job array
     # THIS_TRIAL_DIR/flows/: a directory with one json file for each example in the validation set
     # THIS_TRIAL_DIR/training_results.pkl: results of the training job, including the trained model
     )
