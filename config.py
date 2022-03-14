@@ -1,4 +1,5 @@
-import tune, datetime
+import datetime
+from ray import tune
 
 MAX_PARALLEL_TRAILS = 50
 NUM_TRIALS          = 200
