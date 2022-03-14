@@ -1,6 +1,6 @@
-# condor_tune
+# condor-tune
 
-This example project demonstrates the `condor_tune` framework for
+This example project demonstrates the `condor-tune` framework for
 hyperparameter optimization. It comes from an application in ML for
 Power Systems research, where we first train a neural network using a
 GPU, then run parallel power flows using the trained network on every
