@@ -34,7 +34,7 @@ def move_trials():
 
 ## resulting/expected folder structure:
 # condor-tune-project
-# ├── results   # contains all results                (directory for tuning results, created by user)
+# ├── results                                         (directory for tuning results, created by user)
 # │   ├── condor_tune_2022-03-14_01-15-45.pkl         (pickled results DataFrame, created by condor_tune.py)
 # │   ├── ...
 # ├── tune                                            (TUNE_DIR, created by condor_tune.py)
