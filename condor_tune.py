@@ -104,6 +104,10 @@ def run_trial(params: Dict[str, Any], checkpoint_dir=None) -> None:
     flow_output = os.popen(f'cd {THIS_TRIAL_DIR} && condor_submit run_flow.cmd').read()
     flow_jobid = flow_output.split(' ')[-1].split('\n')[0].strip('.')
     # NOTE: above line may change if condor_submit changes
+    
+    ############################################################################################
+    ## DETECT WHEN FLOW JOBS ARE DONE
+    ############################################################################################
 
     flow_start_time = time.time()
     flow_timeout    = lambda : (time.time() - flow_start_time) > FLOW_TIMEOUT
