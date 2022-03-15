@@ -19,16 +19,15 @@ limited to a single machine with a limited number of CPUs/GPUs. We can
 specify hardware requirements for each stage of the trial, freeing up
 resources for other trials and other cluster users.
 
-The submitting process for a job array is a bit more involved:
+The submitting process for a job array is a bit more involved. We have to prepare the necessary submit file and data files during the first (training) job:
 1. At the end of the training job, we write an HTCondor submit file defining a job array to
-   `THIS_TRIAL_DIR/run_flow.cmd`.
+   `THIS_TRIAL_DIR/run_flow.cmd` (i.e. `queue args from file.txt`)
 2. Suppose every job in this array reads a json file like `THIS_TRIAL_DIR/flows/42.json`
    and runs a job with the required parameters. We can then create the `flows`
    directory and write the json files at the end of the training job.
-3. Once we are done preparing `run_flow.cmd` and the `flows` directory, we create
-   the flag file `THIS_TRIAL_DIR/training_done` and exit.
-4. The HTCondor Job then ends, and the job array is submitted to
-   HTCondor by this script via the bash interface.
+3. Once we are done preparing the `run_flow.cmd` file and the `flows` directory, we create
+   the flag file `THIS_TRIAL_DIR/training_done` and exit the training job.
+4. Finally, this script submits the job array via the bash interface.
    
 The scripts `train.sh` and `metric.sh` are used to run the neural
 network training and metric calculations respectively. They are
