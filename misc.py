@@ -12,7 +12,7 @@ class Torch_CPU_Unpickler(pickle.Unpickler):
 
 def torch_unpickle(path: str) -> Any:
     with open(path, 'rb') as f:
-        return torch_unpickle(f).load()
+        return Torch_CPU_Unpickler(f).load()
 
 def empty_gen(generator):
     o = object() # see https://stackoverflow.com/a/21525143/13073379
