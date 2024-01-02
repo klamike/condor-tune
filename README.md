@@ -1,5 +1,8 @@
 # condor-tune
 
+> [!WARNING] 
+> This project is not actively maintained. It was written with Ray Tune 1.11.0 and HTCondor 9.5.0. Since then, several vulnerabilities have been discovered in Ray (CVE-2023-6019/6020/6021). `requirements.txt` has been updated to grab the latest version of Ray and HTCondor, though Ray's Tune API is likely to have changed.
+
 This example project demonstrates the `condor-tune` framework for
 hyperparameter optimization. It comes from an application in ML for
 Power Systems research, where we first train a neural network using a
