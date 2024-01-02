@@ -43,11 +43,7 @@ located in `TUNE_DIR`. They look something like:
 The full folder structure is outlined at the bottom of [misc.py](misc.py).
 We omit the actual training, flow, and metric calculation scripts as they are out of scope for this project.
 
-## TODO: 
-- Add checkpointing to support early stopping/restarting
-- Quantify maximum number of trials per CPU (tested up to 12 jobs with 2 CPUs)
-- Graceful exit on keyboard interrupt, optionally killing all condor jobs spawned
-
+---
 
 Michael Klamkin 2022  
 Georgia Institute of Technology  
